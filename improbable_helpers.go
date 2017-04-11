@@ -44,8 +44,3 @@ func (c *Context) RenderWithContentType(code int, contentType string, name strin
 	c.response.Write(buf.Bytes())
 	return
 }
-
-// SetNotFoundHandler registers a custom handlers used when no route was found.
-func (e *Echo) SetNotFoundHandler(h HandlerFunc) {
-	e.notFoundHandler = h
-}

@@ -173,7 +173,7 @@ var (
 	// Error handlers
 	//----------------
 
-	notFoundHandler = func(c *Context) error {
+	defaultNotFoundHandler = func(c *Context) error {
 		return NewHTTPError(http.StatusNotFound)
 	}
 
@@ -212,6 +212,7 @@ func New() (e *Echo) {
 		}
 		e.logger.Error(err)
 	}
+	e.SetNotFoundHandler(defaultNotFoundHandler)
 	e.SetHTTPErrorHandler(e.defaultHTTPErrorHandler)
 	e.SetBinder(&binder{})
 
@@ -260,6 +261,11 @@ func (e *Echo) DefaultHTTPErrorHandler(err error, c *Context) {
 // SetHTTPErrorHandler registers a custom Echo.HTTPErrorHandler.
 func (e *Echo) SetHTTPErrorHandler(h HTTPErrorHandler) {
 	e.httpErrorHandler = h
+}
+
+// SetNotFoundHandler registers a custom handlers used when no route was found.
+func (e *Echo) SetNotFoundHandler(h HandlerFunc) {
+	e.notFoundHandler = h
 }
 
 // SetBinder registers a custom binder. It's invoked by Context.Bind().
@@ -574,6 +580,15 @@ func (e *Echo) RunServer(s *http.Server) {
 // RunTLSServer runs a custom server with TLS configuration.
 func (e *Echo) RunTLSServer(s *http.Server, crtFile, keyFile string) {
 	e.run(s, crtFile, keyFile)
+}
+
+// Middlewares returns a list of middlewares used in this echo instance.
+func (e *Echo) Middlewares() []Middleware {
+	ret := make([]Middleware, len(e.middleware))
+	for i, m := range e.middleware {
+		ret[i] = m
+	}
+	return ret
 }
 
 func (e *Echo) run(s *http.Server, files ...string) {

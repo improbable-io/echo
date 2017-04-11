@@ -12,6 +12,10 @@ func (g *Group) Use(m ...Middleware) {
 	}
 }
 
+func (g *Group) Any(path string, h Handler) {
+	g.echo.Any(path, h)
+}
+
 func (g *Group) Connect(path string, h Handler) {
 	g.echo.Connect(path, h)
 }
