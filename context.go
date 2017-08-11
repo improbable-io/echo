@@ -48,6 +48,11 @@ func (c *Context) Request() *http.Request {
 	return c.request
 }
 
+// SetResponse sets the context's response.
+func (c *Context) SetRequest(req *http.Request) {
+	c.request = req
+}
+
 // Response returns *Response.
 func (c *Context) Response() *Response {
 	return c.response
